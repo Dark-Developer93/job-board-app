@@ -9,7 +9,9 @@ const placeholderJobs = [
     applicationUrl: "https://stripe.com/apply",
     slug: "full-stack-developer-at-stripe-1",
     salary: 150000,
+    companyLogoUrl: "https://logo.clearbit.com/stripe.com",
     approved: true,
+    categories: ["Software Development", "Web Development"],
     description: `
 **About Stripe**
 
@@ -60,7 +62,9 @@ Stripe is an equal opportunity employer. We value diversity and are committed to
     applicationUrl: "https://vercel.com/apply",
     slug: "full-stack-developer-at-vercel-2",
     salary: 120000,
+    companyLogoUrl: "https://logo.clearbit.com/vercel.com",
     approved: true,
+    categories: ["Software Development", "Web Development"],
     description: `
 **About Vercel:** 
 
@@ -114,7 +118,9 @@ Join us at Vercel and be a part of shaping the future of web development!
     applicationUrl: "https://openai.com/apply",
     slug: "chatgpt-backend-developer-at-openai-3",
     salary: 250000,
+    companyLogoUrl: "https://logo.clearbit.com/openai.com",
     approved: true,
+    categories: ["Software Development", "Machine Learning", "AI"],
     description: `
 **About OpenAI:**
 
@@ -165,7 +171,10 @@ If you're passionate about AI and want to contribute to cutting-edge technology 
     applicationUrl: "https://codinginflow.com",
     slug: "intern-at-coding-in-flow-4",
     salary: 500,
+    companyLogoUrl:
+      "https://yt3.googleusercontent.com/ytc/AGIKgqMl9TL4OpwS8Zc5jHrNnfO01f_Wbovye9mQzfp36Q=s176-c-k-c0x00ffffff-no-rj",
     approved: true,
+    categories: ["Software Development", "Mobile Development"],
     description: `
 **Help build the best coding tutorials**
 
@@ -180,7 +189,9 @@ I might not be able to pay you a lot, but I can offer you a lot of experience an
     applicationUrl: "https://smartdiary.co",
     slug: "contractor-at-smartdiary-co-5",
     salary: 30000,
+    companyLogoUrl: "https://smartdiary.co/logo.png",
     approved: true,
+    categories: ["Web Development", "UI/UX Design"],
     description: `
 **Help build the future of journaling**
 
@@ -199,7 +210,9 @@ Try it out for free at [https://smartdiary.co](https://smartdiary.co).
     applicationUrl: "https://careers.microsoft.com",
     slug: "software-engineer-at-microsoft-6",
     salary: 180000,
+    companyLogoUrl: "https://logo.clearbit.com/microsoft.com",
     approved: true,
+    categories: ["Software Development", "Cloud Computing"],
     description: `
 **About Microsoft:**
 
@@ -249,7 +262,13 @@ As a Microsoft contractor, you'll have the opportunity to work on exciting proje
     applicationUrl: "https://apple.com/apply",
     slug: "full-stack-developer-at-apple-7",
     salary: 200000,
+    companyLogoUrl: "https://logo.clearbit.com/apple.com",
     approved: true,
+    categories: [
+      "Software Development",
+      "Web Development",
+      "Mobile Development",
+    ],
     description: `
 **About Apple:**
 
@@ -303,7 +322,9 @@ Join Apple and be a part of a team that's dedicated to making a difference in th
     applicationUrl: "https://shopify.com/apply",
     slug: "junior-web-developer-at-shopify-8",
     salary: 90000,
+    companyLogoUrl: "https://logo.clearbit.com/shopify.com",
     approved: true,
+    categories: ["Web Development", "E-commerce"],
     description: `
 **About Shopify:**
 
@@ -346,6 +367,22 @@ This is a fantastic opportunity for those looking to kickstart their career in w
   },
 ];
 
-module.exports = {
+const placeholderCategories = [
+  { name: "Software Development" },
+  { name: "Web Development" },
+  { name: "Mobile Development" },
+  { name: "UI/UX Design" },
+  { name: "Data Science" },
+  { name: "Machine Learning" },
+  { name: "DevOps" },
+  { name: "Cloud Computing" },
+  { name: "AI" },
+  { name: "E-commerce" },
+];
+
+const placeholderData = {
   placeholderJobs,
+  placeholderCategories,
 };
+
+export default placeholderData;
