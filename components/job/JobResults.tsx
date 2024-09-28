@@ -8,7 +8,7 @@ interface JobResultsProps {
 }
 
 export default async function JobResults({
-  filterValues: { q, type, location, remote },
+  filterValues: { q, type, location, remote, categories },
 }: JobResultsProps) {
   const searchString = q
     ?.split(" ")
@@ -23,6 +23,11 @@ export default async function JobResults({
           { type: { search: searchString } },
           { locationType: { search: searchString } },
           { location: { search: searchString } },
+          {
+            categories: {
+              some: { category: { name: { search: searchString } } },
+            },
+          },
         ],
       }
     : {};
@@ -33,6 +38,17 @@ export default async function JobResults({
       type ? { type } : {},
       location ? { location } : {},
       remote ? { locationType: "Remote" } : {},
+      categories
+        ? {
+            categories: {
+              some: {
+                category: {
+                  name: categories,
+                },
+              },
+            },
+          }
+        : {},
       { approved: true },
     ],
   };
@@ -42,7 +58,7 @@ export default async function JobResults({
     include: {
       categories: {
         include: {
-          category: true, // Include the actual Category model
+          category: true,
         },
       },
     },
