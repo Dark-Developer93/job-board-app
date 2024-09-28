@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { jobTypes } from "@/lib/job-types";
+import ClientSideReset from "./ClientSideReset";
 
 interface JobFilterSidebarProps {
   defaultValues: JobFilterValues;
@@ -23,16 +24,24 @@ async function filterJobs(formData: FormData) {
 
   const values = Object.fromEntries(formData.entries());
 
-  const { q, type, location, remote } = jobFilterSchema.parse(values);
+  const { q, type, location, remote, categories } =
+    jobFilterSchema.parse(values);
 
   const searchParams = new URLSearchParams({
     ...(q && { q: q.trim() }),
     ...(type && type !== "all" && { type }),
     ...(location && location !== "all" && { location }),
     ...(remote && { remote: "true" }),
+    ...(categories && categories !== "all" && { categories }),
   });
 
   redirect(`/?${searchParams.toString()}`);
+}
+
+async function clearFilters() {
+  "use server";
+
+  redirect("/");
 }
 
 export default async function JobFilterSidebar({
@@ -47,6 +56,12 @@ export default async function JobFilterSidebar({
     .then((locations) =>
       locations.map(({ location }) => location).filter(Boolean),
     )) as string[];
+
+  const distinctCategories = (await prisma.category
+    .findMany({
+      select: { name: true },
+    })
+    .then((categories) => categories.map(({ name }) => name))) as string[];
 
   return (
     <aside className="sticky top-0 h-fit rounded-lg border bg-background p-4 md:w-[260px]">
@@ -63,7 +78,7 @@ export default async function JobFilterSidebar({
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="type">Type</Label>
-            <Select name="type" defaultValue={defaultValues.type}>
+            <Select name="type" defaultValue={defaultValues.type || "all"}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All types" />
               </SelectTrigger>
@@ -79,15 +94,37 @@ export default async function JobFilterSidebar({
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="location">Location</Label>
-            <Select name="location" defaultValue={defaultValues.location}>
+            <Select
+              name="location"
+              defaultValue={defaultValues.location || "all"}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All types</SelectItem>
+                <SelectItem value="all">All locations</SelectItem>
                 {distinctLocations.map((location) => (
                   <SelectItem key={location} value={location}>
                     {location}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="categories">Categories</Label>
+            <Select
+              name="categories"
+              defaultValue={defaultValues.categories || "all"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="All categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All categories</SelectItem>
+                {distinctCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -106,8 +143,17 @@ export default async function JobFilterSidebar({
           <Button type="submit" className="w-full">
             Filter jobs
           </Button>
+          <Button
+            type="submit"
+            variant="outline"
+            className="w-full"
+            formAction={clearFilters}
+          >
+            Clear All Filters
+          </Button>
         </div>
       </form>
+      <ClientSideReset />
     </aside>
   );
 }
