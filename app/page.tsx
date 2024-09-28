@@ -9,17 +9,19 @@ interface PageProps {
     type?: string;
     location?: string;
     remote?: string;
+    categories?: string;
   };
 }
 
 export default async function Home({
-  searchParams: { q, type, location, remote },
+  searchParams: { q, type, location, remote, categories },
 }: PageProps) {
   const filterValues: JobFilterValues = {
     q,
     type,
     location,
     remote: remote === "true",
+    categories,
   };
 
   return (
