@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 
 import { JobFilterValues } from "@/lib/validation";
 import { clearFilters, filterJobs } from "@/app/actions/jobActions";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { jobTypes } from "@/lib/job-types";
 import ClientSideReset from "./ClientSideReset";
+import FormSubmitButton from "../form-submit-button/FormSubmitButton";
 
 interface JobFilterSidebarProps {
   defaultValues: JobFilterValues;
@@ -115,18 +115,13 @@ export default async function JobFilterSidebar({
             />
             <Label htmlFor="remote">Remote jobs</Label>
           </div>
-          <Button type="submit" className="w-full">
-            Filter jobs
-          </Button>
-          <Button
-            type="submit"
-            variant="outline"
-            className="w-full"
-            formAction={clearFilters}
-          >
-            Clear All Filters
-          </Button>
+          <FormSubmitButton className="w-full">Filter jobs</FormSubmitButton>
         </div>
+      </form>
+      <form action={clearFilters}>
+        <FormSubmitButton variant="outline" className="mt-2 w-full">
+          Clear All Filters
+        </FormSubmitButton>
       </form>
       <ClientSideReset />
     </aside>
