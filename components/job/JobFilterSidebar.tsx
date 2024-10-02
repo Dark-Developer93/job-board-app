@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
-import { JobFilterValues, jobFilterSchema } from "@/lib/validation";
+import { JobFilterValues } from "@/lib/validation";
+import { clearFilters, filterJobs } from "@/app/actions/jobActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,31 +17,6 @@ import ClientSideReset from "./ClientSideReset";
 
 interface JobFilterSidebarProps {
   defaultValues: JobFilterValues;
-}
-
-async function filterJobs(formData: FormData) {
-  "use server";
-
-  const values = Object.fromEntries(formData.entries());
-
-  const { q, type, location, remote, categories } =
-    jobFilterSchema.parse(values);
-
-  const searchParams = new URLSearchParams({
-    ...(q && { q: q.trim() }),
-    ...(type && type !== "all" && { type }),
-    ...(location && location !== "all" && { location }),
-    ...(remote && { remote: "true" }),
-    ...(categories && categories !== "all" && { categories }),
-  });
-
-  redirect(`/?${searchParams.toString()}`);
-}
-
-async function clearFilters() {
-  "use server";
-
-  redirect("/");
 }
 
 export default async function JobFilterSidebar({
