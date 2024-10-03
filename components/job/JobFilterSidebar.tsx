@@ -1,5 +1,6 @@
-import prisma from "@/lib/prisma";
+import { Suspense } from "react";
 
+import prisma from "@/lib/prisma";
 import { JobFilterValues } from "@/lib/validation";
 import { clearFilters, filterJobs } from "@/app/actions/jobActions";
 import { Input } from "@/components/ui/input";
@@ -14,14 +15,13 @@ import {
 import { jobTypes } from "@/lib/job-types";
 import ClientSideReset from "./ClientSideReset";
 import FormSubmitButton from "../form-submit-button/FormSubmitButton";
+import JobFilterSidebarSkeleton from "./JobFilterSidebarSkeleton";
 
 interface JobFilterSidebarProps {
   defaultValues: JobFilterValues;
 }
 
-export default async function JobFilterSidebar({
-  defaultValues,
-}: JobFilterSidebarProps) {
+async function getFilterOptions() {
   const distinctLocations = (await prisma.job
     .findMany({
       where: { approved: true },
@@ -37,6 +37,14 @@ export default async function JobFilterSidebar({
       select: { name: true },
     })
     .then((categories) => categories.map(({ name }) => name))) as string[];
+
+  return { distinctLocations, distinctCategories };
+}
+
+const JobFilterSidebarContent = async ({
+  defaultValues,
+}: JobFilterSidebarProps) => {
+  const { distinctLocations, distinctCategories } = await getFilterOptions();
 
   return (
     <aside className="sticky top-0 h-fit rounded-lg border bg-background p-4 md:w-[260px]">
@@ -126,4 +134,14 @@ export default async function JobFilterSidebar({
       <ClientSideReset />
     </aside>
   );
-}
+};
+
+const JobFilterSidebar = (props: JobFilterSidebarProps) => {
+  return (
+    <Suspense fallback={<JobFilterSidebarSkeleton />}>
+      <JobFilterSidebarContent {...props} />
+    </Suspense>
+  );
+};
+
+export default JobFilterSidebar;
