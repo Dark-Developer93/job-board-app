@@ -1,3 +1,4 @@
+import { cache } from "react";
 import prisma from "@/lib/prisma";
 import { JobFilterValues } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
@@ -7,9 +8,9 @@ interface JobResultsProps {
   filterValues: JobFilterValues;
 }
 
-export default async function JobResults({
-  filterValues: { q, type, location, remote, categories },
-}: JobResultsProps) {
+const fetchJobs = cache(async (filterValues: JobFilterValues) => {
+  const { q, type, location, remote, categories } = filterValues;
+
   const searchString = q
     ?.split(" ")
     .filter((word) => word.length > 0)
@@ -53,7 +54,7 @@ export default async function JobResults({
     ],
   };
 
-  const jobs = await prisma.job.findMany({
+  return prisma.job.findMany({
     where,
     include: {
       categories: {
@@ -66,6 +67,10 @@ export default async function JobResults({
       createdAt: "desc",
     },
   });
+});
+
+export default async function JobResults({ filterValues }: JobResultsProps) {
+  const jobs = await fetchJobs(filterValues);
 
   return (
     <div className="grow space-y-4">
