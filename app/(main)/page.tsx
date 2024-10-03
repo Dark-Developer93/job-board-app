@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { MenuIcon } from "lucide-react";
 
 import JobFilterSidebar from "@/components/job/JobFilterSidebar";
@@ -6,6 +7,7 @@ import { JobFilterValues } from "@/lib/validation";
 import H1 from "@/components/ui/H1";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Loading from "@/components/loading/Loading";
 
 interface PageProps {
   searchParams: {
@@ -17,9 +19,9 @@ interface PageProps {
   };
 }
 
-export default async function Home({
+const Home = ({
   searchParams: { q, type, location, remote, categories },
-}: PageProps) {
+}: PageProps) => {
   const filterValues: JobFilterValues = {
     q,
     type,
@@ -52,8 +54,12 @@ export default async function Home({
         <div className="hidden md:block">
           <JobFilterSidebar defaultValues={filterValues} />
         </div>
-        <JobResults filterValues={filterValues} />
+        <Suspense key={JSON.stringify(filterValues)} fallback={<Loading />}>
+          <JobResults filterValues={filterValues} />
+        </Suspense>
       </section>
     </main>
   );
-}
+};
+
+export default Home;
