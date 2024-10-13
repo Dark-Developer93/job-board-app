@@ -17,7 +17,7 @@ export async function filterJobs(formData: FormData) {
     ...(categories && categories !== "all" && { categories }),
   });
 
-  redirect(`/?${searchParams.toString()}`);
+  redirect(`/jobs?${searchParams.toString()}`);
 }
 
 export async function clearFilters() {
