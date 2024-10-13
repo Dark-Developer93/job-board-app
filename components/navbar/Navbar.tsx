@@ -29,9 +29,14 @@ const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
               <Link href="/profile">Profile</Link>
             </Button>
           ) : (
-            <Button asChild variant="link">
-              <Link href="/login">Login</Link>
-            </Button>
+            <>
+              <Button asChild variant="link">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild variant="link">
+                <Link href="/admin/job-categories">Job categories</Link>
+              </Button>
+            </>
           )}
         </div>
       </nav>
