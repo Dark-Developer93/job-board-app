@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 import { MenuIcon } from "lucide-react";
 
@@ -18,6 +19,37 @@ interface PageProps {
     categories?: string;
   };
 }
+function getTitle({ q, type, location, remote, categories }: JobFilterValues) {
+  let titlePrefix = "All developer jobs";
+
+  if (q) {
+    titlePrefix = `${q} jobs`;
+  } else if (type) {
+    titlePrefix = `${type} developer jobs`;
+  } else if (remote) {
+    titlePrefix = "Remote developer jobs";
+  } else if (categories) {
+    titlePrefix = `${categories} jobs`;
+  }
+
+  const titleSuffix = location ? ` in ${location}` : "";
+
+  return `${titlePrefix}${titleSuffix}`;
+}
+
+export function generateMetadata({
+  searchParams: { q, type, location, remote, categories },
+}: PageProps): Metadata {
+  return {
+    title: `${getTitle({
+      q,
+      type,
+      location,
+      remote: remote === "true",
+      categories,
+    })} | JobBoard`,
+  };
+}
 
 const Home = ({
   searchParams: { q, type, location, remote, categories },
@@ -33,7 +65,7 @@ const Home = ({
   return (
     <main className="m-auto my-10 max-w-5xl space-y-10 px-3">
       <div className="space-y-5 text-center">
-        <H1>Developer jobs</H1>
+        <H1>{getTitle(filterValues)}</H1>
         <p className="text-muted-foreground">Find your dream job.</p>
       </div>
       <section className="flex flex-col gap-4 md:flex-row">
