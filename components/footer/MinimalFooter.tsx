@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const Footer = () => {
+const MinimalFooter = () => {
   return (
     <footer className="border-t">
       <div className="mx-auto max-w-5xl space-y-5 px-3 py-5">
@@ -55,4 +55,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default MinimalFooter;
