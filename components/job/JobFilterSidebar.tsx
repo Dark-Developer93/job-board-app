@@ -48,7 +48,7 @@ const JobFilterSidebarContent = async ({
 
   return (
     <aside className="sticky top-0 h-fit rounded-lg border bg-background p-4 md:w-[260px]">
-      <form action={filterJobs}>
+      <form action={filterJobs} key={JSON.stringify(defaultValues)}>
         <div className="space-y-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="q">Search</Label>
@@ -61,7 +61,7 @@ const JobFilterSidebarContent = async ({
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="type">Type</Label>
-            <Select name="type" defaultValue={defaultValues.type || "all"}>
+            <Select name="type" defaultValue={defaultValues.type || ""}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All types" />
               </SelectTrigger>
@@ -77,10 +77,7 @@ const JobFilterSidebarContent = async ({
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="location">Location</Label>
-            <Select
-              name="location"
-              defaultValue={defaultValues.location || "all"}
-            >
+            <Select name="location" defaultValue={defaultValues.location || ""}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All locations" />
               </SelectTrigger>
@@ -98,7 +95,7 @@ const JobFilterSidebarContent = async ({
             <Label htmlFor="categories">Categories</Label>
             <Select
               name="categories"
-              defaultValue={defaultValues.categories || "all"}
+              defaultValue={defaultValues.categories || ""}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All categories" />
