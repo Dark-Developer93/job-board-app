@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import "@/app/globals.css";
+import { auth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/toaster";
 import { MinimalNavbar } from "@/components/navbar/Navbar";
 import FullFooter from "@/components/footer/FullFooter";
+import { Role } from "@prisma/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,16 +29,25 @@ export const metadata: Metadata = {
   // },
 };
 
-export default function RootLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  console.log("Full auth() result:", session);
+  const isAuthenticated = !!session;
+  const isAdmin = session?.user?.role === Role.ADMIN;
+
+  console.log("Full session object:", JSON.stringify(session, null, 2));
+  console.log("isAuthenticated:", isAuthenticated);
+  console.log("isAdmin:", isAdmin);
+  console.log("User role:", session?.user?.role);
+
   return (
     <html lang="en">
       <body className={`${inter.className} min-w-[350px]`}>
-        {/* Add the isAuthenticated and isAdmin props to the MinimalNavbar */}
-        <MinimalNavbar />
+        <MinimalNavbar isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
         {children}
         <Toaster />
         <FullFooter />
