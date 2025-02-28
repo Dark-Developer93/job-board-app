@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ import { verifyEmail } from "@/app/actions/authActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const [status, setStatus] = useState<"verifying" | "success" | "error">(
     "verifying",
   );
@@ -72,5 +72,26 @@ export default function VerifyEmailPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <Card className="mx-auto mt-8 max-w-sm">
+          <CardHeader>
+            <CardTitle>Email Verification</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              <p>Loading verification page...</p>
+            </div>
+          </CardContent>
+        </Card>
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

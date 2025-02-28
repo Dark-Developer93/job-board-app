@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,7 +29,7 @@ const resetPasswordSchema = z.object({
 
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -107,5 +107,26 @@ export default function ResetPasswordPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <Card className="mx-auto max-w-sm">
+          <CardHeader>
+            <CardTitle>Reset Password</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              <p>Loading reset password page...</p>
+            </div>
+          </CardContent>
+        </Card>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
