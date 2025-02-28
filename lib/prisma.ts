@@ -1,19 +1,27 @@
+/* eslint-disable no-var */
 /* eslint-disable vars-on-top */
 import { PrismaClient } from "@prisma/client";
-
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
+import { neon } from "@neondatabase/serverless";
 
 declare global {
-  // eslint-disable-next-line no-var
-  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+  var prisma: PrismaClient | undefined;
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
+const connectionString = process.env.DATABASE_URL;
+
+// eslint-disable-next-line import/no-mutable-exports
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
+}
 
 export default prisma;
 
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
-}
+// Export the neon function for use in other parts of your application if needed
+export const db = neon(connectionString!);
