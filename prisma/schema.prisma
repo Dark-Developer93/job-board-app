@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
@@ -11,22 +8,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           String           @id @default(cuid())
-  name         String
-  email        String
-  role         Role             @default(USER)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  applications JobApplication[]
+model Account {
+  id                     String               @id @default(cuid())
+  userId                 String
+  type                   String
+  provider               String
+  providerAccountId      String
+  password               String?
+  emailVerified          DateTime?
+  emailVerificationToken String?
+  access_token           String?
+  email                  String               @unique
+  expires_at             Int?
+  id_token               String?
+  refresh_token          String?
+  scope                  String?
+  session_state          String?
+  token_type             String?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resetPasswordTokens    ResetPasswordToken[]
 
+  @@unique([provider, providerAccountId])
   @@index([email])
-  @@map("users")
+  @@map("accounts")
 }
 
-enum Role {
-  USER
-  ADMIN
+model ResetPasswordToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  accountId String
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("reset_password_tokens")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String?
+  role           Role             @default(USER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  image          String?
+  accounts       Account[]
+  JobApplication JobApplication[]
+  sessions       Session[]
+
+  @@map("users")
 }
 
 model Job {
@@ -37,7 +68,6 @@ model Job {
   locationType     String
   location         String?
   description      String?
-  salary           Int
   companyName      String
   applicationEmail String?
   applicationUrl   String?
@@ -45,9 +75,10 @@ model Job {
   approved         Boolean          @default(false)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
+  applicantCount   Int              @default(0)
+  salary           Int
   applications     JobApplication[]
   categories       JobCategory[]
-  applicantCount   Int              @default(0)
 
   @@map("jobs")
 }
@@ -61,19 +92,12 @@ model JobApplication {
   status      ApplicationStatus @default(PENDING)
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
-  user        User              @relation(fields: [userId], references: [id])
   job         Job               @relation(fields: [jobId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
 
   @@index([jobId])
   @@index([userId])
   @@map("job_applications")
-}
-
-enum ApplicationStatus {
-  PENDING
-  REVIEWED
-  REJECTED
-  ACCEPTED
 }
 
 model Category {
@@ -87,10 +111,32 @@ model Category {
 model JobCategory {
   jobId      String
   categoryId String
-  job        Job      @relation(fields: [jobId], references: [id])
   category   Category @relation(fields: [categoryId], references: [id])
+  job        Job      @relation(fields: [jobId], references: [id])
 
   @@id([jobId, categoryId])
   @@index([categoryId])
   @@map("job_categories")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  REJECTED
+  ACCEPTED
 }
