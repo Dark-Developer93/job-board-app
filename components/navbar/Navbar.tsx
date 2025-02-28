@@ -46,10 +46,7 @@ const Navbar = ({ isAuthenticated = false, isAdmin = false }: NavbarProps) => {
 };
 
 // Add logo to the MinimalNavbar
-const MinimalNavbar = ({
-  isAuthenticated = false,
-  isAdmin = false,
-}: NavbarProps) => {
+const MinimalNavbar = ({ isAuthenticated, isAdmin }: NavbarProps) => {
   return (
     <header className="bg-primary py-4 text-primary-foreground">
       <div className="container mx-auto flex items-center justify-between px-4">
