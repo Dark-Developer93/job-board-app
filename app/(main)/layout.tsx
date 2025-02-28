@@ -35,14 +35,8 @@ export default async function PublicLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  console.log("Full auth() result:", session);
   const isAuthenticated = !!session;
   const isAdmin = session?.user?.role === Role.ADMIN;
-
-  console.log("Full session object:", JSON.stringify(session, null, 2));
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("isAdmin:", isAdmin);
-  console.log("User role:", session?.user?.role);
 
   return (
     <html lang="en">
