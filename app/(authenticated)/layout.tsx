@@ -7,6 +7,8 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { MinimalNavbar } from "@/components/navbar/Navbar";
+import { auth } from "@/lib/auth";
+import { Role } from "@prisma/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,18 +31,17 @@ export default async function LoggedInLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const session = await auth();
+  const session = await auth();
+  const isAuthenticated = !!session;
+  const isAdmin = session?.user.role === Role.ADMIN;
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="flex min-h-screen flex-col">
-          {/* <Provider session={session}> */}
-          {/* Add the isAuthenticated and isAdmin props to the MinimalNavbar */}
-          <MinimalNavbar isAuthenticated isAdmin />
+          <MinimalNavbar isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
           {children}
           <Toaster />
-          {/* </Provider> */}
         </div>
       </body>
     </html>
